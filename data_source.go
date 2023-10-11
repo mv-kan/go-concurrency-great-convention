@@ -60,7 +60,7 @@ func ReceiveDataFromWeb() Person {
 	r1 := rand.New(s1)
 
 	age := r1.Intn(100)
-	time.Sleep(time.Millisecond * 1500) // REALLY SLOW CONNECTION
+	time.Sleep(time.Millisecond * 6000) // REALLY SLOW CONNECTION
 
 	return Person{
 		Name: "PersonWeb",
@@ -117,6 +117,9 @@ func (s *subWeb) loop() {
 		// we have got to wait for receive data from web
 		// this hurts responsiveness of system, so the solution is to
 		// move ReceiveDataFromWeb() to its own go routine
+		// if you question what is priority of calls here, then see this piece of code
+		// https://go.dev/play/p/_UdKSa_uBcP
+		// TL;DR closed chans has priority
 		select {
 		case receiveDone <- ReceiveDataFromWeb():
 		case <-s.done:
