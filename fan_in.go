@@ -1,6 +1,9 @@
 package main
 
-import "sync"
+import (
+	"fmt"
+	"sync"
+)
 
 // merges multiple chans into one
 // out chan after closing rapidly returns value, ok
@@ -11,6 +14,8 @@ func Merge[T any](done <-chan struct{}, cs ...<-chan T) <-chan T {
 
 	output := func(c <-chan T) {
 		defer wg.Done()
+		defer func() { fmt.Println("Merge routine done") }()
+
 		for v := range c { // finishes when c (chan) is closed
 			select {
 			case <-done:
