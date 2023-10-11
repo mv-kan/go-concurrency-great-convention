@@ -78,7 +78,7 @@ func (s *subDB) loop() {
 		select {
 		case s.perChan <- ReceiveDataFromDB():
 		case <-s.done: // a receive operation on a closed channel can always proceed immediately, yielding the element type’s zero value.
-			fmt.Printf("SubscriptionDB stop\n\n")
+			fmt.Printf("SubscriptionDB stop\n")
 			close(s.perChan)
 			return
 		}
