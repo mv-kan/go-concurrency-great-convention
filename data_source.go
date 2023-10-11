@@ -60,7 +60,7 @@ func ReceiveDataFromWeb() Person {
 	r1 := rand.New(s1)
 
 	age := r1.Intn(100)
-	time.Sleep(time.Millisecond * 1000) // REALLY SLOW CONNECTION
+	time.Sleep(time.Millisecond * 10000) // REALLY SLOW CONNECTION
 
 	return Person{
 		Name: "PersonWeb",
@@ -97,6 +97,18 @@ func (s *subDB) Close() error {
 type subWeb struct {
 	perChan chan Person
 	done    chan struct{}
+}
+
+func (s *subWeb) loopNotResponsive() {
+	for {
+		select {
+		case s.perChan <- ReceiveDataFromWeb():
+		case <-s.done: // a receive operation on a closed channel can always proceed immediately, yielding the element type’s zero value.
+			fmt.Printf("SubscriptionWeb stop\n")
+			close(s.perChan)
+			return
+		}
+	}
 }
 
 func (s *subWeb) loop() {

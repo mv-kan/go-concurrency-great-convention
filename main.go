@@ -34,9 +34,10 @@ func main() {
 	// input.Scan()
 	time.Sleep(time.Second * 4)
 	fmt.Println("Stoping all go routines")
-	done <- struct{}{}
+	close(done)
 	time.Sleep(time.Second * 4)
 	fmt.Printf("active go routines: %d\n", runtime.NumGoroutine())
 	time.Sleep(time.Second * 100)
+	panic("check all routines")
 
 }
