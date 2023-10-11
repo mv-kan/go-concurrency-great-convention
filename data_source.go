@@ -123,7 +123,8 @@ func (s *subWeb) loop() {
 
 	for {
 		select {
-		case s.perChan <- <-receiveDone:
+		case person := <-receiveDone:
+			s.perChan <- person
 			go receive()
 		case <-s.done: // a receive operation on a closed channel can always proceed immediately, yielding the element type’s zero value.
 			fmt.Printf("SubscriptionWeb stop\n")
