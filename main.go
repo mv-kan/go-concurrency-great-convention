@@ -9,6 +9,7 @@ import (
 func main() {
 	fmt.Println("Starting...")
 	done := make(chan struct{})
+
 	// first stage (data producer)
 	subWeb := SubscribeWeb()
 	subDB := SubscribeDB()
@@ -21,7 +22,9 @@ func main() {
 	}()
 
 	// second stage
-	processedPeople := ProcessPeople(done, 18, subWeb, subDB)
+	cDB := subDB.Updates()
+	cWeb := subWeb.Updates()
+	processedPeople := ProcessPeople(done, 18, cWeb, cDB)
 
 	// third stage (data consumer)
 	err := WriteToFile(done, processedPeople)
@@ -29,15 +32,10 @@ func main() {
 		// close all routines
 		close(done)
 	}
-	// fmt.Print("insert any value here to stop program: ")
-	// input := bufio.NewScanner(os.Stdin)
-	// input.Scan()
+
 	time.Sleep(time.Second * 4)
-	fmt.Println("Stoping all go routines")
+	fmt.Print("\nStoping all go routines\n\n")
 	close(done)
 	time.Sleep(time.Second * 4)
 	fmt.Printf("active go routines: %d\n", runtime.NumGoroutine())
-	time.Sleep(time.Second * 100)
-	panic("check all routines")
-
 }

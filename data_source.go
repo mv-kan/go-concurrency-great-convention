@@ -60,7 +60,7 @@ func ReceiveDataFromWeb() Person {
 	r1 := rand.New(s1)
 
 	age := r1.Intn(100)
-	time.Sleep(time.Millisecond * 10000) // REALLY SLOW CONNECTION
+	time.Sleep(time.Millisecond * 1500) // REALLY SLOW CONNECTION
 
 	return Person{
 		Name: "PersonWeb",
@@ -117,7 +117,10 @@ func (s *subWeb) loop() {
 		// we have got to wait for receive data from web
 		// this hurts responsiveness of system, so the solution is to
 		// move ReceiveDataFromWeb() to its own go routine
-		receiveDone <- ReceiveDataFromWeb()
+		select {
+		case receiveDone <- ReceiveDataFromWeb():
+		case <-s.done:
+		}
 	}
 	go receive()
 
