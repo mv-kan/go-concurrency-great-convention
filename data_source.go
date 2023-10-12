@@ -78,7 +78,7 @@ func (s *subDB) loop() {
 		select {
 		case s.perChan <- ReceiveDataFromDB():
 		case <-s.done: // a receive operation on a closed channel can always proceed immediately, yielding the element type’s zero value.
-			fmt.Printf("SubscriptionDB stop\n")
+			fmt.Printf("SubscriptionDB done\n")
 			close(s.perChan)
 			return
 		}
@@ -104,7 +104,7 @@ func (s *subWeb) loopNotResponsive() {
 		select {
 		case s.perChan <- ReceiveDataFromWeb():
 		case <-s.done: // a receive operation on a closed channel can always proceed immediately, yielding the element type’s zero value.
-			fmt.Printf("SubscriptionWeb stop\n")
+			fmt.Printf("SubscriptionWeb done\n")
 			close(s.perChan)
 			return
 		}
@@ -133,7 +133,7 @@ func (s *subWeb) loop() {
 			s.perChan <- person
 			go receive()
 		case <-s.done: // a receive operation on a closed channel can always proceed immediately, yielding the element type’s zero value.
-			fmt.Printf("SubscriptionWeb stop\n")
+			fmt.Printf("SubscriptionWeb done\n")
 			close(s.perChan)
 			return
 		}
