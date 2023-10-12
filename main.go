@@ -33,9 +33,9 @@ func main() {
 		close(done)
 	}
 
-	time.Sleep(time.Second * 4)
+	time.Sleep(time.Second * 7)
 	fmt.Print("\nStoping all go routines\n\n")
 	close(done)
-	time.Sleep(time.Second * 4)
+	time.Sleep(time.Second * 7)
 	fmt.Printf("active go routines: %d\n", runtime.NumGoroutine())
 }
