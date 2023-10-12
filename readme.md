@@ -6,6 +6,31 @@ Pipeline has three stages
 2. Second one, perform some processing on that data (this is process_data.go)
 3. Third one, sending data to *outbound* channels (consumer stage) (this is write_to_file.go)
 
+## Close signal
+
+```
+func GetData() int {
+	fmt.Println("GetData is called")
+	time.Sleep(time.Second * 3)
+	return 100
+}
+
+func main() {
+	c := make(chan int)
+	done := make(chan struct{})
+	close(done) // after closing done, <-done spams zero values
+	select {
+	case c <- GetData():
+		fmt.Println("c branch")
+	case <-done:
+		// This branch is gonna be called 100% of time 
+		// because closed chans has priority 
+		fmt.Println("Done branch")
+	}
+	fmt.Println("End of program")
+}
+```
+
 ##  Really slow connection and responsiveness of system 
 
 ```
